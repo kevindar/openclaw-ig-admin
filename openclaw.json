@@ -1,0 +1,49 @@
+{
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+        "fallbacks": [
+          "openrouter/qwen/qwen3-235b-a22b:free",
+          "openrouter/mistralai/mistral-small-3.1-24b-instruct:free"
+        ]
+      },
+      "models": {
+        "openrouter/meta-llama/llama-3.3-70b-instruct:free": {},
+        "openrouter/qwen/qwen3-235b-a22b:free": {},
+        "openrouter/mistralai/mistral-small-3.1-24b-instruct:free": {}
+      },
+      "systemPrompt": "Kamu adalah admin virtual kos-kosan putri yang menjawab pertanyaan calon penghuni melalui Instagram DM. Selalu gunakan Bahasa Indonesia yang ramah dan profesional. Ikuti panduan dari skill ig-kos-admin."
+    }
+  },
+  "skills": {
+    "allowBundled": [
+      "ig-kos-admin"
+    ],
+    "load": {
+      "extraDirs": []
+    }
+  },
+  "channels": {
+    "instagram": {
+      "enabled": true,
+      "dmPolicy": "open",
+      "allowFrom": ["*"],
+      "webhookPath": "/webhook/instagram"
+    }
+  },
+  "tools": {
+    "enabled": false
+  },
+  "plugins": {
+    "enabled": true,
+    "allow": ["instagram"],
+    "deny": []
+  },
+  "gateway": {
+    "mode": "local"
+  },
+  "session": {
+    "historyLimit": 20
+  }
+}

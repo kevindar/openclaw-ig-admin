@@ -1,0 +1,29 @@
+{
+  "name": "@openclaw/instagram",
+  "version": "2026.2.25",
+  "description": "OpenClaw Instagram DM channel plugin (Messenger Platform)",
+  "type": "module",
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "channel": {
+      "id": "instagram",
+      "label": "Instagram",
+      "selectionLabel": "Instagram (Messenger Platform)",
+      "docsPath": "/channels/instagram",
+      "docsLabel": "instagram",
+      "blurb": "Instagram DM via Facebook Messenger Platform.",
+      "aliases": [
+        "ig"
+      ],
+      "order": 85,
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "@openclaw/instagram",
+      "localPath": "extensions/instagram",
+      "defaultChoice": "npm"
+    }
+  }
+}
