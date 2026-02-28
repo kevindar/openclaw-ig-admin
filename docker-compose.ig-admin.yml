@@ -1,0 +1,72 @@
+services:
+  ig-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.ig-admin
+    container_name: openclaw-ig-admin
+    restart: unless-stopped
+    ports:
+      - "${GATEWAY_PORT:-18789}:18789"
+
+    env_file:
+      - .env
+
+    environment:
+      - NODE_ENV=production
+      - OPENCLAW_STATE_DIR=/data
+
+    volumes:
+      # Persist session data across restarts
+      - ig-admin-data:/data
+      # Mount skill as editable volume so you can update without rebuilding
+      - ./skills/ig-kos-admin:/app/skills/ig-kos-admin:ro
+
+    # -----------------------------------------------------------------------
+    # Security hardening
+    # -----------------------------------------------------------------------
+
+    # Run as non-root user (matches igadmin user in Dockerfile)
+    user: "1000:1000"
+
+    # Read-only root filesystem — the container cannot modify its own binaries
+    read_only: true
+
+    # Writable tmpfs for Node.js temp files only
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+
+    # Drop ALL Linux capabilities — the process has zero kernel privileges
+    cap_drop:
+      - ALL
+
+    # Prevent privilege escalation (e.g. setuid binaries)
+    security_opt:
+      - no-new-privileges:true
+
+    # Memory and CPU limits
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+    # No access to host devices
+    devices: []
+
+    # DNS restricted to public resolvers only
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  ig-admin-data:
+    driver: local

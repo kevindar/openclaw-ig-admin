@@ -147,6 +147,85 @@ Menggunakan OpenRouter free models (tanpa biaya):
 
 Rate limit free tier: 20 request/menit, 200 request/hari per model.
 
+## Running with Docker (Recommended)
+
+Docker provides **strong security isolation** — the bot runs in a locked-down container that:
+
+| Protection | What it prevents |
+|-----------|-----------------|
+| **Read-only filesystem** | Bot cannot modify its own code or install malware |
+| **All capabilities dropped** | No kernel-level privileges (mount, network admin, etc.) |
+| **No privilege escalation** | Setuid binaries cannot gain root |
+| **Non-root user** | Process runs as unprivileged `igadmin` user |
+| **Memory/CPU limits** | Cannot exhaust host resources (512MB / 1 CPU) |
+| **tmpfs only for /tmp** | Temp files are noexec and limited to 64MB |
+| **No host devices** | Cannot access host hardware |
+| **Isolated network** | Only outbound to internet (Graph API + OpenRouter) |
+
+### Quick Start (Docker)
+
+```bash
+# 1. Setup environment
+cp .env.ig-admin .env
+# Edit .env with your credentials
+
+# 2. Edit your business rulebook
+# Edit skills/ig-kos-admin/SKILL.md with your kos data
+
+# 3. Build and start
+./scripts/docker-ig-admin.sh build
+./scripts/docker-ig-admin.sh start
+
+# 4. View logs
+./scripts/docker-ig-admin.sh logs
+
+# 5. Stop
+./scripts/docker-ig-admin.sh stop
+```
+
+### Docker Commands
+
+```bash
+./scripts/docker-ig-admin.sh build     # Build image
+./scripts/docker-ig-admin.sh start     # Start container
+./scripts/docker-ig-admin.sh stop      # Stop container
+./scripts/docker-ig-admin.sh restart   # Restart
+./scripts/docker-ig-admin.sh logs      # Follow logs
+./scripts/docker-ig-admin.sh status    # Check status
+./scripts/docker-ig-admin.sh clean     # Remove container + data
+```
+
+### Updating the Skill Without Rebuilding
+
+The skill directory is mounted as a read-only volume. To update responses:
+
+1. Edit `skills/ig-kos-admin/SKILL.md` on your host
+2. Restart: `./scripts/docker-ig-admin.sh restart`
+
+No rebuild needed — the container picks up the updated skill on restart.
+
+### Docker + ngrok for Development
+
+```bash
+# Terminal 1: Start the bot
+./scripts/docker-ig-admin.sh start
+
+# Terminal 2: Expose via ngrok
+ngrok http 18789
+
+# Use the ngrok HTTPS URL as your Facebook webhook callback URL
+```
+
+### Production Deployment
+
+For production, you can deploy this to any Docker-compatible platform:
+
+- **VPS** (DigitalOcean, Linode, Hetzner): `docker compose -f docker-compose.ig-admin.yml up -d`
+- **Railway/Render**: Point to the `Dockerfile.ig-admin`
+- **Fly.io**: `fly launch --dockerfile Dockerfile.ig-admin`
+
+Make sure your deployment has a stable HTTPS URL for the Facebook webhook.
+
 ## Troubleshooting
 
 ### Webhook tidak terverifikasi
