@@ -46,6 +46,11 @@ COPY --from=builder --chown=igadmin:igadmin /app/skills/ig-kos-admin ./skills/ig
 # Writable data directory for sessions/state
 RUN mkdir -p /data && chown igadmin:igadmin /data
 
+# Pre-seed gateway config so it finds gateway.mode=local at startup
+RUN mkdir -p /home/igadmin/.openclaw \
+  && echo '{"gateway":{"mode":"local"}}' > /home/igadmin/.openclaw/config.json \
+  && chown -R igadmin:igadmin /home/igadmin/.openclaw
+
 ENV NODE_ENV=production
 ENV OPENCLAW_STATE_DIR=/data
 
