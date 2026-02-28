@@ -14,7 +14,7 @@ COPY extensions/instagram/package.json ./extensions/instagram/package.json
 RUN NODE_OPTIONS=--max-old-space-size=2048 pnpm install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
+RUN NODE_OPTIONS=--max-old-space-size=2048 pnpm build
 
 # ---------------------------------------------------------------------------
 # Production stage — minimal image with only what the gateway needs
