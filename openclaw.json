@@ -41,7 +41,10 @@
     "deny": []
   },
   "gateway": {
-    "mode": "local"
+    "mode": "local",
+    "controlUi": {
+      "allowedOrigins": ["*"]
+    }
   },
   "session": {
     "historyLimit": 20
